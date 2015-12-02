@@ -1,5 +1,5 @@
 {-# LANGUAGE UnicodeSyntax #-}
-module SimpleIterations where
+module SimpleIteration where
 
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
