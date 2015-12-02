@@ -17,8 +17,8 @@ data Config = Config {
 
 φ c x = (r c) * x * (1 - x)
 iter c = iterate (φ c) (x₀ c)
-snce :: Config → EC (Layout Int Double) ()
-snce c = plot (line "" [take 50 $ zip [(0::Int)..] $ iter c])
+snce :: Config → EC (Layout Double Double) ()
+snce c = plot (line "" [take 50 $ zip [(0::Double)..] $ iter c])
 
 range = [0,0.05..1]
 plt :: (Double → Double) → [(Double, Double)]
@@ -53,5 +53,5 @@ bifup = concatMap (\x → map ((,) x) (atrs x)) [(1.0::Double),1.003..4]
 bifu :: EC (Layout Double Double) ()
 bifu = do
   setColors [black `withOpacity` 0.4]
-  setShapes [PointShapePlus]
+  setShapes [PointShapeCircle]
   plot (points "" bifup)
