@@ -18,7 +18,9 @@ data Config = Config {
 φ c x = (r c) * x * (1 - x)
 iter c = iterate (φ c) (x₀ c)
 snce :: Config → EC (Layout Double Double) ()
-snce c = plot (line "" [take 50 $ zip [(0::Double)..] $ iter c])
+snce c = do
+  layout_y_axis . laxis_generate .= scaledAxis def (0,1)
+  plot (line "" [take 50 $ zip [(0::Double)..] $ iter c])
 
 range = [0,0.05..1]
 plt :: (Double → Double) → [(Double, Double)]
@@ -32,6 +34,8 @@ visup c = next ((x₀ c), 0) where
 
 visu :: Config → EC (Layout Double Double) ()
 visu c = do
+  layout_x_axis . laxis_generate .= scaledAxis def (0,1)
+  layout_y_axis . laxis_generate .= scaledAxis def (0,1)
   plot (line "" [plt (φ c)])
   plot (line "" [plt id])
   plot (line "" [take 50 $ visup c])
