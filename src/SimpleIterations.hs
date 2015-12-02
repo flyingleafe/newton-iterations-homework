@@ -2,8 +2,6 @@
 module SimpleIterations (snce, visu, bifu) where
 
 import Graphics.Rendering.Chart.Easy
-import Graphics.Rendering.Chart.Backend.Cairo
-import Graphics.Rendering.Chart.Gtk
 
 r, x₀ :: Double
 r  = 2.8
