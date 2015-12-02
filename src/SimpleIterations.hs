@@ -1,8 +1,9 @@
 {-# LANGUAGE UnicodeSyntax #-}
-module SimpleIterations where
+module SimpleIterations (snce, visu, bifu) where
 
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
+import Graphics.Rendering.Chart.Gtk
 
 r, x₀ :: Double
 r  = 2.8
@@ -22,7 +23,7 @@ plt f = map (\x → (x, f x)) range
 
 -- x₀,0 → x₀,x₁ → x₁,x₁ → x₁,x₂ → x₂,x₂ → …
 -- x,y → x,φx → φx,φx → …
-visup = next (x₀,0) where 
+visup = next (x₀,0) where
   next (x, y) = (x, y) : (x, φ x) : next (φ x, φ x)
 
 visu = do
@@ -41,13 +42,9 @@ atrs :: Double → [Double]
 atrs r = take post $ drop pres $ iterate (φr r) 0.5
 
 bifup :: [(Double, Double)]
-bifup = concatMap (\x → map ((,) x) (atrs x)) [(1.0::Double),1.005..4]
+bifup = concatMap (\x → map ((,) x) (atrs x)) [(1.0::Double),1.003..4]
 
 bifu = do
-  setColors [black `withOpacity` 0.2]
+  setColors [black `withOpacity` 0.4]
+  setShapes [PointShapePlus]
   plot (points "" bifup)
-
-main = do
-  toFile def "1a-snce.png" snce
-  toFile def "1b-visu.png" visu
-  toFile def "1c-bifu.png" bifu
