@@ -36,11 +36,11 @@ nearTo z | z==0 = Just 3 -- magnitude z < eps = Just 3
 nearTo z = findIndex isNear roots where
   isNear r = magnitude (z - r) < 0.5
 
-takeFirst :: [a] → (a → Maybe b) → b
-takeFirst l f = head $ mapMaybe f l
+takeFirst :: [a] → (a → Maybe b) → (Int, b)
+takeFirst l f = head $ mapMaybe (\(x,y) → (,) x <$> f y) (zip [0..] l)
 
 -- z ↦ which root it converges to (0/1/2); 3 if diverges
-cls :: Cex → Int
+cls :: Cex → (Int, Int)
 cls z = takeFirst (iter z) nearTo
 
     {-
@@ -70,7 +70,7 @@ newt = do
 newtonPicSize = 2000 :: Int
 range = 2
 
-getNewtonColor :: (Int, Int) → Int
+getNewtonColor :: (Int, Int) → (Int, Int)
 getNewtonColor (a,b) = cls z where
   z = za :+ zb
   za = norm a
