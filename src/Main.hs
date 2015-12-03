@@ -6,6 +6,9 @@ import SimpleIterations
 import Newton
 
 import System.IO
+import Data.Colour.RGBSpace
+--import Data.Colour.Names
+import Data.Colour.RGBSpace.HSL
 import Data.Text                              (pack)
 import Data.Word
 import Data.Array.MArray
@@ -28,15 +31,33 @@ currentPlot config label = do
     "Current: VISU" → visu config
     _               → snce config
 
-firebrick  = (0xFF, 0x30, 0x30)
-seagreen   = (0x43, 0xCD, 0x80)
-royalblue  = (0x43, 0x6E, 0xEE)
+type MyRGB = RGB Double
 
-formatColor :: Int → (Word8, Word8, Word8)
+intcast = fromInteger . toInteger
+
+firebrick, seagreen, royalblue :: MyRGB
+firebrick  = RGB 0xFF 0x30 0x30
+seagreen   = RGB 0x43 0xCD 0x80
+royalblue  = RGB 0x43 0x6E 0xEE
+
+maxα :: Double
+maxα = 20
+
+dim :: Double → MyRGB → MyRGB
+dim α o@(RGB r g b) = let h = hue o
+                          s = saturation o
+                          l = lightness o in
+                      hsl h s $ l - α
+
+formatColor :: Int → MyRGB
+--formatColor 0 = aqua
+--formatColor 1 = brown
+--formatColor 2 = bisque
+--formatColor 3 = black
 formatColor 0 = firebrick
 formatColor 1 = seagreen
 formatColor 2 = royalblue
-formatColor 3 = (0, 0,   0)
+formatColor _ = RGB 0 0 0
 
 drawAndSaveBitmap :: IO ()
 drawAndSaveBitmap = do
@@ -48,11 +69,18 @@ drawAndSaveBitmap = do
   nChannels ← pixbufGetNChannels pb
   let address i j = j * rowstride + j * nChannels
   arr ← pixbufGetPixels pb :: IO (PixbufData Int Word8)
-  mapM_ (\i → do let col = getNewtonColor ((i `mod` size), (i `div` size))
-                     (a, b, c) = formatColor col
-                 writeArray arr (i*3)   a
-                 writeArray arr (i*3+1) b
-                 writeArray arr (i*3+2) c
+  mapM_ (\i → do let (α, col) = getNewtonColor ((i `mod` size), (i `div` size))
+                     α' :: Double
+                     α' = intcast α
+                     α'' = if α' >= maxα then maxα - 1 else α'
+                     α''' = α'' / maxα
+                     (RGB a b c) =
+                       dim α'' $
+                       formatColor col
+
+                 writeArray arr (i*3)   (round a)
+                 writeArray arr (i*3+1) (round b)
+                 writeArray arr (i*3+2) (round c)
         ) [0..(size-1)*(size-1)]
   pixbufSave pb ("test2.png" :: String) (pack "png") ([] :: [(String, String)])
 
