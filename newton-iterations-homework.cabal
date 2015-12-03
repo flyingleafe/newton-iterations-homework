@@ -18,12 +18,14 @@ cabal-version:       >=1.10
 executable newton-iterations-homework
   main-is:             Main.hs
   other-extensions:    UnicodeSyntax
-  build-depends:       Chart >=1.5 && <1.6
-                     , Chart-cairo >=1.5 && <1.6
-                     , Chart-gtk >=1.5 && <1.6
-                     , base >=4.8 && <4.9
-                     , gtk >=0.13 && <0.14
+  build-depends:       Chart >= 1.5
+                     , Chart-cairo >= 1.5
+                     , Chart-gtk >= 1.5
+                     , base >= 4.8
+                     , gtk >= 0.13
                      , transformers >= 0.4.2.0
+                     , text >= 1.2.1
+                     , array >= 0.5.1.0
   hs-source-dirs:      src
   ghc-options:         -O2
   default-language:    Haskell2010

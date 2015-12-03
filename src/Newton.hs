@@ -1,5 +1,5 @@
 {-# LANGUAGE UnicodeSyntax #-}
-module Newton where
+module Newton (getNewtonColor) where
 
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
@@ -79,6 +79,9 @@ getNewtonColor (a,b) = cls z where
   norm s = (2 * fromIntegral s / fromIntegral newtonPicSize - 1) * fromIntegral range
 
   {-
+getNewtonColor :: Int → (Int, Int) → Int
+getNewtonColor = undefined
+
 main = do
   let a = toRenderable $ execEC newt
   renderableToFile (FileOptions (800, 800) PNG) "2-newt.png" a
