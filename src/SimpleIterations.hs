@@ -41,7 +41,6 @@ visu c = do
   plot (line "" [take 50 $ visup c])
 
 
-
 φr :: Double → Double → Double
 φr r x = r * x * (1 - x)
 
