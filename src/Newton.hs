@@ -1,5 +1,5 @@
 {-# LANGUAGE UnicodeSyntax #-}
-module Newton (newt) where
+module Newton (getNewtonColor) where
 
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
@@ -59,9 +59,7 @@ newr =
   flip mapM_ alp
     $ \z₀ → plot (line "" [map toPair $ take 20 $ iter z₀])
 
-newtonPicSize = 1000
-
-getNewtonColor :: (Int, Int) → Int
+getNewtonColor :: Int → (Int, Int) → Int
 getNewtonColor = undefined
 
 main = do

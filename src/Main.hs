@@ -28,6 +28,10 @@ currentPlot config label = do
     "Current: VISU" → visu config
     _               → snce config
 
+formatColor :: Int → (Word8, Word8, Word8)
+formatColor 0 = (255, 0, 0)
+formatColor 1 = (0, 255, 0)
+formatColor 2 = (0, 0, 255)
 
 drawAndSaveBitmap :: IO ()
 drawAndSaveBitmap = do
@@ -37,10 +41,11 @@ drawAndSaveBitmap = do
   nChannels ← pixbufGetNChannels pb
   let address i j = j * rowstride + j * nChannels
   arr ← pixbufGetPixels pb :: IO (PixbufData Int Word8)
-  mapM_ (\i → do
-              writeArray arr (i*3) 255
-              writeArray arr (i*3+1) 255
-              writeArray arr (i*3+2) 255
+  mapM_ (\i → do let col = getNewtonColor size ((i `div` size), (i `mod` size))
+                     (a, b, c) = formatColor col
+                 writeArray arr (i*3)   a
+                 writeArray arr (i*3+1) b
+                 writeArray arr (i*3+2) c
         ) [0..(size-1)*(size-1)]
   pixbufSave pb ("test2.png" :: String) (pack "png") ([] :: [(String, String)])
 
@@ -125,7 +130,7 @@ main = do
   onClicked button2 $ labelSetLabel panellabel "Current: VISU" >> refreshPic True
   --onClicked button3 $ dumpToFile bifuFileName bifu "Current: BIFU"
   onClicked button3 drawAndSaveBitmap
-  onClicked button4 $ dumpToFile newtFileName newt "Current: NEWT"
+  --onClicked button4 $ dumpToFile newtFileName newt "Current: NEWT"
 
   window `on` configureEvent $ do
     (w, h) ← eventSize
