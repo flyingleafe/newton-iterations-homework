@@ -28,14 +28,14 @@ currentPlot config label = do
     "Current: VISU" → visu config
     _               → snce config
 
-firebrick = (0xEE, 0x2C, 0x2C)
-seagreen  = (0x43, 0xCD, 0x80)
-navy      = (0x00, 0x00, 0x80)
+firebrick  = (0xFF, 0x30, 0x30)
+seagreen   = (0x43, 0xCD, 0x80)
+royalblue  = (0x43, 0x6E, 0xEE)
 
 formatColor :: Int → (Word8, Word8, Word8)
 formatColor 0 = firebrick
 formatColor 1 = seagreen
-formatColor 2 = navy
+formatColor 2 = royalblue
 formatColor 3 = (0, 0,   0)
 
 drawAndSaveBitmap :: IO ()
@@ -135,9 +135,8 @@ main = do
 
   onClicked button1 $ labelSetLabel panellabel "Current: SNCE" >> refreshPic True
   onClicked button2 $ labelSetLabel panellabel "Current: VISU" >> refreshPic True
-  --onClicked button3 $ dumpToFile bifuFileName bifu "Current: BIFU"
-  onClicked button3 drawAndSaveBitmap
-  --onClicked button4 $ dumpToFile newtFileName newt "Current: NEWT"
+  onClicked button3 $ dumpToFile bifuFileName bifu "Current: BIFU"
+  onClicked button4 drawAndSaveBitmap
 
   window `on` configureEvent $ do
     (w, h) ← eventSize
