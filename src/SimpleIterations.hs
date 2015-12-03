@@ -3,17 +3,10 @@ module SimpleIterations (snce, visu, bifu, Config(..)) where
 
 import Graphics.Rendering.Chart.Easy
 
---class MyConf where
---  x :: Double
---  y :: Double
-
 data Config = Config {
     r :: Double
   , x₀ :: Double
   }
---r, x₀ :: Double
---r  = 2.8
---x₀ = 0.5
 
 φ c x = (r c) * x * (1 - x)
 iter c = iterate (φ c) (x₀ c)
