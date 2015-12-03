@@ -87,7 +87,7 @@ main = do
   window `on` configureEvent $ do
     (w, h) ← eventSize
     liftIO . putStrLn $ "Resizing: " ++ show w ++ " " ++ show h
-    --liftIO $ refreshPic True
+    liftIO $ refreshPic False
     return False
 
   --boxPackStart vbox delim2 PackNatural 5
