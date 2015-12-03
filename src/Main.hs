@@ -48,7 +48,6 @@ dim :: Double → MyRGB → MyRGB
 dim α o@(RGB r g b) = let h = hue o
                           s = saturation o
                           l = lightness o in
-                      traceShow l $
                       hsl h s $ l * (1 - α)
 
 formatColor :: Int → MyRGB
