@@ -5,17 +5,13 @@ module Main where
 import SimpleIterations
 import Newton
 
-import System.IO
 import Data.Colour.RGBSpace
-import Debug.Trace
---import Data.Colour.Names
 import Data.Colour.RGBSpace.HSL
 import Data.Text                              (pack)
 import Data.Word
 import Data.Array.MArray
 import Control.Monad.IO.Class                 (liftIO)
 import Graphics.UI.Gtk
-import Graphics.UI.Gtk.Gdk.Pixbuf
 import Graphics.Rendering.Chart.Easy          (execEC)
 import Graphics.Rendering.Chart.Gtk           (updateCanvas)
 import Graphics.Rendering.Chart.Renderable    (toRenderable)
@@ -60,8 +56,6 @@ drawAndSaveBitmap :: IO ()
 drawAndSaveBitmap = do
   let size = newtonPicSize
   pb ← pixbufNew ColorspaceRgb False 8 size size
-  rowstride ← pixbufGetRowstride pb
-  nChannels ← pixbufGetNChannels pb
   arr ← pixbufGetPixels pb :: IO (PixbufData Int Word8)
   mapM_ (\i → do let (α, col) = getNewtonColor ((i `mod` size), (i `div` size))
                      α' :: Double
@@ -76,7 +70,7 @@ drawAndSaveBitmap = do
                  writeArray arr (i*3+1) (round b)
                  writeArray arr (i*3+2) (round c)
         ) [0..(size-1)*(size-1)]
-  pixbufSave pb ("test2.png" :: String) (pack "png") ([] :: [(String, String)])
+  pixbufSave pb newtFileName (pack "png") ([] :: [(String, String)])
 
 main :: IO ()
 main = do
@@ -121,8 +115,6 @@ main = do
   set scroller_x₀ [scaleDigits := 2]
   boxPackStart hboxpanel scroller_r PackGrow 0
   boxPackStart hboxpanel scroller_x₀ PackGrow 0
-  --scaleSetDigits scroller_r 0
-  --scaleSetDigits scroller_x₀ 0
 
   boxPackStart vbox delim1 PackNatural 5
 
