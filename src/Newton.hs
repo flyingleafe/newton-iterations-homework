@@ -1,12 +1,12 @@
 {-# LANGUAGE UnicodeSyntax #-}
 module Newton where
 
+import Graphics.Rendering.Chart.Easy
+import Graphics.Rendering.Chart.Backend.Cairo
+
 import Data.Complex
 import Data.Maybe
 import Data.List
-
-import Graphics.Rendering.Chart.Easy
-import Graphics.Rendering.Chart.Backend.Cairo
 
 type Cex = Complex Double
 
@@ -23,9 +23,9 @@ iter = iterate next
 alp :: [Cex]
 alp = [ a :+ b | a ← l, b ← l ]
     where l = [start,start+step..end]
-          start = -1
-          end   = 1
-          step  = 0.0625
+          start = -2
+          end   = 2
+          step  = 0.025
 
 eps = 0.1 :: Double
 
@@ -35,11 +35,32 @@ roots = [1:+0, mkPolar 1 (2*pi/3), mkPolar 1 (4*pi/3)]
 -- z ↦ which root it converges to (0/1/2); 3 if diverges
 cls :: Cex → Int
 cls z = fromMaybe 3 $ findIndex isn roots where
-  isn r = magnitude (z - r) < eps 
+  isn r = magnitude ((iter z !! 30) - r) < eps 
 
 toPair :: Cex → (Double, Double)
 toPair (a :+ b) = (a, b)
     
--- newt = _
+size = 600 :: Int
 
--- main = toFile def "2-newt.png" newt
+coords :: Int → Int → Cex
+coords n m = norm n :+ norm m
+       where
+         norm :: Int → Double
+         norm x = ((fromIntegral x / fromIntegral size) - 0.5) * 2
+
+colors :: Int → Int → Int
+colors n m = cls (coords n m)
+
+newt = do
+  setColors $ map opaque [red, green, blue, black]
+  setShapes [PointShapeCircle]
+  flip mapM_ [0,1,2,3]
+    $ \i → plot (points "" $ map toPair $ filter ((==i) . cls) alp)
+
+newr =
+  flip mapM_ alp
+    $ \z₀ → plot (line "" [map toPair $ take 20 $ iter z₀])
+
+main = do
+  toFile def "2-newt.png" newt
+  --toFile def "2-newr.png" newr
