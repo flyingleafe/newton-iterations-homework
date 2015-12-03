@@ -46,16 +46,26 @@ visu c = do
 φr r x = r * x * (1 - x)
 
 pres = 500
-post = 100
+post = 200
 
 atrs :: Double → [Double]
 atrs r = take post $ drop pres $ iterate (φr r) 0.5
 
 bifup :: [(Double, Double)]
-bifup = concatMap (\x → map ((,) x) (atrs x)) [(1.0::Double),1.003..4]
+bifup = concatMap (\x → map ((,) x) (atrs x)) [(1.0::Double),1.001..4]
+
+points' :: [(x,y)]  -> EC l (PlotPoints x y)
+points' values = liftEC $ do
+    color <- takeColor
+    shape <- takeShape
+    plot_points_values .= values
+    plot_points_title .= ""
+    plot_points_style . point_color .= color
+    plot_points_style . point_shape .= shape
+    plot_points_style . point_radius .= 0.5
 
 bifu :: EC (Layout Double Double) ()
 bifu = do
   setColors [black `withOpacity` 0.4]
   setShapes [PointShapeCircle]
-  plot (points "" bifup)
+  plot (points' bifup)
