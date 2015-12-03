@@ -28,20 +28,27 @@ currentPlot config label = do
     "Current: VISU" → visu config
     _               → snce config
 
+firebrick = (0xEE, 0x2C, 0x2C)
+seagreen  = (0x43, 0xCD, 0x80)
+navy      = (0x00, 0x00, 0x80)
+
 formatColor :: Int → (Word8, Word8, Word8)
-formatColor 0 = (255, 0, 0)
-formatColor 1 = (0, 255, 0)
-formatColor 2 = (0, 0, 255)
+formatColor 0 = firebrick
+formatColor 1 = seagreen
+formatColor 2 = navy
+formatColor 3 = (0, 0,   0)
 
 drawAndSaveBitmap :: IO ()
 drawAndSaveBitmap = do
-  let size = 1000
+  let
+    size :: Int
+    size = newtonPicSize
   pb ← pixbufNew ColorspaceRgb False 8 size size
   rowstride ← pixbufGetRowstride pb
   nChannels ← pixbufGetNChannels pb
   let address i j = j * rowstride + j * nChannels
   arr ← pixbufGetPixels pb :: IO (PixbufData Int Word8)
-  mapM_ (\i → do let col = getNewtonColor size ((i `div` size), (i `mod` size))
+  mapM_ (\i → do let col = getNewtonColor ((i `mod` size), (i `div` size))
                      (a, b, c) = formatColor col
                  writeArray arr (i*3)   a
                  writeArray arr (i*3+1) b

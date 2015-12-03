@@ -1,5 +1,5 @@
 {-# LANGUAGE UnicodeSyntax #-}
-module Newton (getNewtonColor) where
+module Newton (getNewtonColor, newtonPicSize) where
 
 import Graphics.Rendering.Chart.Easy
 import Graphics.Rendering.Chart.Backend.Cairo
@@ -29,7 +29,7 @@ alp = [ a :+ b | a ← l, b ← l ]
 
 roots :: [Cex]
 roots = [1:+0, mkPolar 1 (2*pi/3), mkPolar 1 (4*pi/3)]
-      
+
 --eps = 0.0001
 nearTo :: Cex → Maybe Int
 nearTo z | z==0 = Just 3 -- magnitude z < eps = Just 3
@@ -46,7 +46,7 @@ cls z = takeFirst (iter z) nearTo
     {-
 toPair :: Cex → (Double, Double)
 toPair (a :+ b) = (a, b)
-    
+
 points' :: [(x,y)]  -> EC l (PlotPoints x y)
 points' values = liftEC $ do
     color <- takeColor
@@ -67,7 +67,7 @@ newt = do
     $ \i → plot (points' $ map toPair $ filter ((==i) . cls) alp)
   -}
 
-newtonPicSize = 1000
+newtonPicSize = 2000 :: Int
 range = 2
 
 getNewtonColor :: (Int, Int) → Int
