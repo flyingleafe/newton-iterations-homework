@@ -67,7 +67,7 @@ newt = do
     $ \i → plot (points' $ map toPair $ filter ((==i) . cls) alp)
   -}
 
-newtonPicSize = 500 :: Int
+newtonPicSize = 2000 :: Int
 range = 2
 
 getNewtonColor :: (Int, Int) → (Int, Int)

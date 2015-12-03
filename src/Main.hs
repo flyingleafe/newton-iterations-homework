@@ -7,6 +7,7 @@ import Newton
 
 import System.IO
 import Data.Colour.RGBSpace
+import Debug.Trace
 --import Data.Colour.Names
 import Data.Colour.RGBSpace.HSL
 import Data.Text                              (pack)
@@ -35,47 +36,41 @@ type MyRGB = RGB Double
 
 intcast = fromInteger . toInteger
 
-firebrick, seagreen, royalblue :: MyRGB
-firebrick  = RGB 0xFF 0x30 0x30
-seagreen   = RGB 0x43 0xCD 0x80
-royalblue  = RGB 0x43 0x6E 0xEE
+color1, color2, color3 :: MyRGB
+color1  = RGB 0x7F 0xEE 0x00
+color2  = RGB 0xFF 0x7F 0x00
+color3  = RGB 0x48 0x76 0xFF
 
 maxα :: Double
-maxα = 20
+maxα = 15
 
 dim :: Double → MyRGB → MyRGB
 dim α o@(RGB r g b) = let h = hue o
                           s = saturation o
                           l = lightness o in
-                      hsl h s $ l - α
+                      traceShow l $
+                      hsl h s $ l * (1 - α)
 
 formatColor :: Int → MyRGB
---formatColor 0 = aqua
---formatColor 1 = brown
---formatColor 2 = bisque
---formatColor 3 = black
-formatColor 0 = firebrick
-formatColor 1 = seagreen
-formatColor 2 = royalblue
+formatColor 0 = color1
+formatColor 1 = color2
+formatColor 2 = color3
 formatColor _ = RGB 0 0 0
 
 drawAndSaveBitmap :: IO ()
 drawAndSaveBitmap = do
-  let
-    size :: Int
-    size = newtonPicSize
+  let size = newtonPicSize
   pb ← pixbufNew ColorspaceRgb False 8 size size
   rowstride ← pixbufGetRowstride pb
   nChannels ← pixbufGetNChannels pb
-  let address i j = j * rowstride + j * nChannels
   arr ← pixbufGetPixels pb :: IO (PixbufData Int Word8)
   mapM_ (\i → do let (α, col) = getNewtonColor ((i `mod` size), (i `div` size))
                      α' :: Double
                      α' = intcast α
                      α'' = if α' >= maxα then maxα - 1 else α'
-                     α''' = α'' / maxα
+                     α''' = (α'' / maxα)
                      (RGB a b c) =
-                       dim α'' $
+                       dim α''' $
                        formatColor col
 
                  writeArray arr (i*3)   (round a)
